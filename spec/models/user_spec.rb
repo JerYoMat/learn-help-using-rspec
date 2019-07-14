@@ -3,13 +3,10 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  before do
-    User.destroy_all
-    LearnHelp.destroy_all
-  end
 
   let(:user_attributes) do
-    {
+    { 
+      id: 1,
       name: 'some name',
       email: 'user@test.com',
       password: 'password',
@@ -17,7 +14,7 @@ RSpec.describe User, type: :model do
       status: 'student'
     }
   end
-
+  
   let(:missing_name) { user_attributes.except(:name) }
   let(:missing_email) { user_attributes.except(:email) }
   let(:missing_password) { user_attributes.except(:password) }
@@ -26,21 +23,7 @@ RSpec.describe User, type: :model do
   let(:unit) { Unit.create(title: 'Rails', order: 1) }
   let(:topic) { Topic.create(title: 'basics', order: 1, unit_id: 1) }
 
-  let(:learn_helper_one) do
-    LearnHelper.new(
-      title: 'test 1',
-      url: 'www.railstutorial.org',
-      topic_id: 1
-    )
-  end
-
-  let(:learn_helper_two) do
-    LearnHelper.new(
-      title: 'test 2',
-      url: 'www.secondrailstutorial.org',
-      topic_id: 1
-    )
-  end
+  
 
   it 'is valid when expected' do
     expect(User.new(user_attributes)).to be_valid
@@ -54,8 +37,10 @@ RSpec.describe User, type: :model do
     expect(User.new(missing_email)).to be_invalid
   end
 
-  it 'requires a plausible email format' do
-    expect(false)
+  it 'is invalid if email format does not match' do
+    user = User.new(user_attributes)
+    user.email = 'user'
+    expect(user).to be_invalid
   end
 
   it 'has secure password' do
@@ -74,17 +59,30 @@ RSpec.describe User, type: :model do
   end
 
   it 'defaults to admin => false' do
-    user = User.create(user_attributes)
+    user = User.new(user_attributes)
     expect(user.admin).to eq(false)
   end
 
   it 'has many learn helpers' do
     user = User.create(user_attributes)
-    expect(user.learn_helpers).to eq([learn_helper_one, learn_helper_two])
+    Unit.create(title: 'test', order: 1)
+    Topic.create(title: 'test', order: 1, unit_id: 1)
+    helper = user.learn_helpers.build(
+      title: 'test title',
+      topic_id: 1
+    )
+    expect(user.learn_helpers).to eq([helper])
   end
 
   it 'has many topics, through helpers' do
     user = User.create(user_attributes)
+    Unit.create(title: 'test', order: 1)
+    topic = Topic.create(title: 'test', order: 1, unit_id: 1)
+    user.learn_helpers.build(
+      title: 'test title',
+      topic_id: 1
+    ).save
     expect(user.topics).to eq([topic])
   end
+
 end
