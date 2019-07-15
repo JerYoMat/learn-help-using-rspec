@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class User < ApplicationRecord
-  has_many :learn_helpers
+  has_many :learn_helpers, dependent: :destroy
   has_many :topics, through: :learn_helpers
   has_secure_password
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i.freeze
@@ -15,7 +15,7 @@ class User < ApplicationRecord
             length: { maximum: 255 },
             format: { with: VALID_EMAIL_REGEX },
             uniqueness: { case_sensitive: false }
-  validates :password,
+  validates :password_digest,
             presence: true,
             confirmation: true,
             length: { minimum: 6 }

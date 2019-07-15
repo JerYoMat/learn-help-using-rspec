@@ -20,8 +20,8 @@ RSpec.describe User, type: :model do
   let(:missing_password) { user_attributes.except(:password) }
   let(:missing_github_username) { user_attributes.except(:github_username) }
   let(:missing_status) { user_attributes.except(:status) }
-  let(:unit) { Unit.create(title: 'Rails', order: 1) }
-  let(:topic) { Topic.create(title: 'basics', order: 1, unit_id: 1) }
+ 
+  let(:topic) { Topic.create(title: 'basics', order: 1) }
 
   
 
@@ -63,26 +63,5 @@ RSpec.describe User, type: :model do
     expect(user.admin).to eq(false)
   end
 
-  it 'has many learn helpers' do
-    user = User.create(user_attributes)
-    Unit.create(title: 'test', order: 1)
-    Topic.create(title: 'test', order: 1, unit_id: 1)
-    helper = user.learn_helpers.build(
-      title: 'test title',
-      topic_id: 1
-    )
-    expect(user.learn_helpers).to eq([helper])
-  end
-
-  it 'has many topics, through helpers' do
-    user = User.create(user_attributes)
-    Unit.create(title: 'test', order: 1)
-    topic = Topic.create(title: 'test', order: 1, unit_id: 1)
-    user.learn_helpers.build(
-      title: 'test title',
-      topic_id: 1
-    ).save
-    expect(user.topics).to eq([topic])
-  end
-
+  it { should have_many(:learn_helpers) }
 end
