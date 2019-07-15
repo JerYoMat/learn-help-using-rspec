@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 require 'rails_helper'
 
 RSpec.describe AuthorizeApiRequest do
@@ -13,6 +11,7 @@ RSpec.describe AuthorizeApiRequest do
   subject(:request_obj) { described_class.new(header) }
 
   # Test Suite for AuthorizeApiRequest#call
+  # This is our entry point into the service class
   describe '#call' do
     # returns user object when request is valid
     context 'when valid request' do
@@ -70,4 +69,4 @@ RSpec.describe AuthorizeApiRequest do
       end
     end
   end
-end
+end 
