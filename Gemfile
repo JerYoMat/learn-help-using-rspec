@@ -10,7 +10,7 @@ gem 'active_model_serializers'
 gem 'bcrypt', '~> 3.1.7'
 gem 'dotenv-rails'
 gem 'jwt'
-gem 'puma', '~> 3.11'
+gem 'puma', '~> 4.3'
 
 
 group :test do
